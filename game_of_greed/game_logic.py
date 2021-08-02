@@ -1,6 +1,7 @@
 
 from random import randint, sample
 from collections import Counter
+from tests.flo import *
 roles={
     (1,1):100,
     (5,1):50,
@@ -43,7 +44,7 @@ roles={
 }
 class GameLogic:
 
-
+    @staticmethod
     def calculate_score(dice_roll:tuple)->int:
         score=0
         dice_counter=Counter(dice_roll).most_common()
@@ -58,9 +59,8 @@ class GameLogic:
         for x in dice_counter:
             score+=roles[x]
         return score
-        
     
-
+    @staticmethod
     def roll_dice(num)->tuple:
         return tuple(randint(1,6) for _ in range(0, num))
 
@@ -84,7 +84,63 @@ class Banker:
         self.shelved=0
     
 
+class Game(GameLogic, Banker): 
 
+    def play(self, roller):
+        print("Welcome to Game of Greed")
+        print("(y)es to play or (n)o to decline")
+        decision = input("> ")
+
+        if decision == "y":
+            var1 = True
+            round_num = 1
+            dice_num = 6
+            while var1:
+                print(f"Starting round {round_num}")
+                print(f"Rolling {dice_num} dice...")
+                dice = self.roll_dice(dice_num)
+                sentence = "*** "
+                for x in dice:
+                    sentence = sentence + str(x) + " "
+                sentence = sentence + "***"
+                print(sentence)
+                print("Enter dice to keep, or (q)uit:")
+                dice_to_keep = input("> ") 
+                if dice_to_keep == "q":
+                    var1 = False
+                    print(f"Thanks for playing. You earned {self.balance} points")
+                else:
+                    new_list = []
+                    for x in dice_to_keep:
+                        new_list.append(int(x))
+                    tuple_list = tuple(new_list)
+                    shelf_score = self.calculate_score(tuple_list)
+                    self.shelf(shelf_score)
+                    dice_num = dice_num - len(dice_to_keep) 
+                    print(f"You have {self.shelved} unbanked points and {dice_num} dice remaining")
+                    print("(r)oll again, (b)ank your points or (q)uit:")
+                    decision2 = input("> ")
+                    if decision2 == "r":
+                        continue
+                    elif decision2 == "b":
+                        print(f"You banked {self.shelved} points in round {round_num}")
+                        self.bank()
+                        round_num += 1
+                        print(f"Total score is {self.balance} points")
+                        dice_num = 6
+                    elif decision2 == "q":
+                        print(f"Thanks for playing. You earned {self.balance} points")
+                        var1 = False
+        else: 
+            print("OK. Maybe another time")
+
+
+if __name__ == "__main__":
+    game = Game()
+    game.play()
+
+        
+    
 
 
 
