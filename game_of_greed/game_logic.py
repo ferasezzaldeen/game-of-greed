@@ -86,7 +86,8 @@ class Banker:
 
 class Game(GameLogic, Banker): 
 
-    def play(self, roller):
+    def play(self, roller=None):
+        roller=roller or Game.roll_dice
         print("Welcome to Game of Greed")
         print("(y)es to play or (n)o to decline")
         decision = input("> ")
@@ -98,7 +99,7 @@ class Game(GameLogic, Banker):
             while var1:
                 print(f"Starting round {round_num}")
                 print(f"Rolling {dice_num} dice...")
-                dice = self.roll_dice(dice_num)
+                dice = roller(dice_num)
                 sentence = "*** "
                 for x in dice:
                     sentence = sentence + str(x) + " "
