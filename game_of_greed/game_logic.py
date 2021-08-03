@@ -39,7 +39,7 @@ roles={
     (3,1):0,
     (4,1):0,
     (6,1):0,
-
+    
 
 }
 class GameLogic:
@@ -63,6 +63,50 @@ class GameLogic:
     @staticmethod
     def roll_dice(num)->tuple:
         return tuple(randint(1,6) for _ in range(0, num))
+    @staticmethod   
+    def validate_keepers(roll,keeper):
+
+        roll_counter=Counter(roll).most_common()
+        keeper_counter=Counter(keeper).most_common()
+
+    
+        if len(keeper)>len(roll):
+                return False
+        
+        for i in keeper_counter:
+            if i not in roll_counter:
+                return False
+
+        if len(keeper_counter)==3 and keeper_counter[2][1] == 2:
+            return True
+
+        for i in keeper_counter:
+            if roles[i] ==0:
+                return False
+        return True
+    @staticmethod
+    def get_scorers(test_input):
+        result=[]
+        input_counter=Counter(test_input).most_common()
+        for i in input_counter:
+            if roles[i] !=0:
+                for x in range(i[1]) :
+                    result.append(i[0])
+
+
+        return tuple(result)
+                
+
+
+
+        
+
+
+
+        
+            
+
+       
 
 
 class Banker:
@@ -96,31 +140,73 @@ class Game(GameLogic, Banker):
             var1 = True
             round_num = 1
             dice_num = 6
+            print(f"Starting round {round_num}")
             while var1:
-                print(f"Starting round {round_num}")
                 print(f"Rolling {dice_num} dice...")
                 dice = roller(dice_num)
+
                 sentence = "*** "
                 for x in dice:
                     sentence = sentence + str(x) + " "
                 sentence = sentence + "***"
                 print(sentence)
+
+                if  not Game.get_scorers(dice):
+                    print("""****************************************
+**        Zilch!!! Round over         **
+****************************************""")
+                    print(f"You banked {0} points in round {round_num}")
+                    # round_num += 1
+                    print(f"Total score is {self.balance} points")
+                    dice_num=6
+                    round_num+=1
+                    print(f"Starting round {round_num}")
+
+                    continue
+                    
+
+
                 print("Enter dice to keep, or (q)uit:")
                 dice_to_keep = input("> ") 
                 if dice_to_keep == "q":
                     var1 = False
                     print(f"Thanks for playing. You earned {self.balance} points")
-                else:
-                    new_list = []
-                    for x in dice_to_keep:
-                        new_list.append(int(x))
-                    tuple_list = tuple(new_list)
-                    shelf_score = self.calculate_score(tuple_list)
+                else :
+                    
+                   
+                    dice_to_keep=[int(i) for i in dice_to_keep ]
+                    while not Game.validate_keepers(dice,tuple(dice_to_keep)) and var1: 
+                        print("Cheater!!! Or possibly made a typo...")
+                        print(sentence)
+                        print("Enter dice to keep, or (q)uit:")
+                        dice_to_keep=input("> ")
+                        if dice_to_keep=="q":
+                            var1=False
+                        else:
+                            
+
+                            dice_to_keep=[int(i) for i in dice_to_keep ]
+
+                    if dice_to_keep=="q":
+                        print(f"Thanks for playing. You earned {self.balance} points")
+                        continue
+                    if len(dice_to_keep)==dice_num:
+                        shelf_score =1500
+                    else:
+                        shelf_score = self.calculate_score(dice_to_keep)
+
                     self.shelf(shelf_score)
                     dice_num = dice_num - len(dice_to_keep) 
                     print(f"You have {self.shelved} unbanked points and {dice_num} dice remaining")
+                    if dice_num==0:
+                        dice_num=6
                     print("(r)oll again, (b)ank your points or (q)uit:")
                     decision2 = input("> ")
+                    while decision2!="r" and decision2!="b" and decision2!="q":
+                        print("please enter the correct input")
+                        print("(r)oll again, (b)ank your points or (q)uit:")
+                        decision2 = input("> ")
+                        
                     if decision2 == "r":
                         continue
                     elif decision2 == "b":
@@ -128,10 +214,15 @@ class Game(GameLogic, Banker):
                         self.bank()
                         round_num += 1
                         print(f"Total score is {self.balance} points")
+
                         dice_num = 6
+                        print(f"Starting round {round_num}")
+
                     elif decision2 == "q":
                         print(f"Thanks for playing. You earned {self.balance} points")
                         var1 = False
+                    
+                    
         else: 
             print("OK. Maybe another time")
 
@@ -140,24 +231,17 @@ if __name__ == "__main__":
     game = Game()
     game.play()
 
-        
-    
+# def get_scorers(test_input):
+#         result=[]
+#         input_counter=Counter(test_input).most_common()
+#         for i in input_counter:
+#             if roles[i] !=0:
+#                 for x in range(i[1]) :
+#                     result.append(i[0])
 
 
+#         print (tuple(result))
 
 
-
-
-
-
-
-
-
-
-
-# dice_roll=(1,5,2,3,4,6)
-# stright=sorted(dice_roll)
-# print(stright)
-# if stright==[1,2,3,4,5,6]:
-#     score=1500
-#     print (score)
+# get_scorers((5,))     
+   
