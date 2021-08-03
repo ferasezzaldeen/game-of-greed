@@ -20,7 +20,7 @@ def test_hot_dice():
     diffs = diff(Game().play, path="tests/vresion_3/hot_dice.sim.txt")
     assert not diffs, diffs
 
-@pytest.mark.skip("pending")
+# @pytest.mark.skip("pending")
 def test_cheat_and_fix():
     """Cheating (or typos) should not be allowed.
     Therefore the user's input must be validated
