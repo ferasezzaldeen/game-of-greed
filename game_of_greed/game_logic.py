@@ -68,7 +68,9 @@ class GameLogic:
 
         roll_counter=Counter(roll).most_common()
         keeper_counter=Counter(keeper).most_common()
-
+        # for x in keeper:
+        #     if k==" ":
+        #         return False
     
         if len(keeper)>len(roll):
                 return False
@@ -168,6 +170,7 @@ class Game(GameLogic, Banker):
 
                 print("Enter dice to keep, or (q)uit:")
                 dice_to_keep = input("> ") 
+                dice_to_keep= dice_to_keep.replace(' ', '')
                 if dice_to_keep == "q":
                     var1 = False
                     print(f"Thanks for playing. You earned {self.balance} points")
@@ -180,12 +183,13 @@ class Game(GameLogic, Banker):
                         print(sentence)
                         print("Enter dice to keep, or (q)uit:")
                         dice_to_keep=input("> ")
+                        dice_to_keep= dice_to_keep.replace(' ', '')
                         if dice_to_keep=="q":
                             var1=False
                         else:
                             
 
-                            dice_to_keep=[int(i) for i in dice_to_keep ]
+                            dice_to_keep= [int(i) for i in dice_to_keep ]
 
                     if dice_to_keep=="q":
                         print(f"Thanks for playing. You earned {self.balance} points")
@@ -231,17 +235,3 @@ if __name__ == "__main__":
     game = Game()
     game.play()
 
-# def get_scorers(test_input):
-#         result=[]
-#         input_counter=Counter(test_input).most_common()
-#         for i in input_counter:
-#             if roles[i] !=0:
-#                 for x in range(i[1]) :
-#                     result.append(i[0])
-
-
-#         print (tuple(result))
-
-
-# get_scorers((5,))     
-   
