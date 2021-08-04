@@ -142,8 +142,14 @@ class Game(GameLogic, Banker):
             var1 = True
             round_num = 1
             dice_num = 6
-            print(f"Starting round {round_num}")
+            if round_num !=20:
+                print(f"Starting round {round_num}")
             while var1:
+                if round_num == 20:
+                    self.bank()
+                    print(f"Thanks for playing. You earned {self.balance} points")
+                    break
+
                 print(f"Rolling {dice_num} dice...")
                 dice = roller(dice_num)
 
@@ -171,7 +177,7 @@ class Game(GameLogic, Banker):
                 print("Enter dice to keep, or (q)uit:")
                 dice_to_keep = input("> ") 
                 dice_to_keep= dice_to_keep.replace(' ', '')
-                if dice_to_keep == "q":
+                if dice_to_keep == "q" or round_num==20:
                     var1 = False
                     print(f"Thanks for playing. You earned {self.balance} points")
                 else :
@@ -184,14 +190,14 @@ class Game(GameLogic, Banker):
                         print("Enter dice to keep, or (q)uit:")
                         dice_to_keep=input("> ")
                         dice_to_keep= dice_to_keep.replace(' ', '')
-                        if dice_to_keep=="q":
+                        if dice_to_keep=="q" or round_num==20:
                             var1=False
                         else:
                             
 
                             dice_to_keep= [int(i) for i in dice_to_keep ]
 
-                    if dice_to_keep=="q":
+                    if dice_to_keep=="q" or round_num==3:
                         print(f"Thanks for playing. You earned {self.balance} points")
                         continue
                     if len(dice_to_keep)==dice_num:
@@ -211,8 +217,9 @@ class Game(GameLogic, Banker):
                         print("(r)oll again, (b)ank your points or (q)uit:")
                         decision2 = input("> ")
                         
-                    if decision2 == "r":
-                        continue
+                    if decision2 == "q" or round_num==20 :
+                        print(f"Thanks for playing. You earned {self.balance} points")
+                        var1 = False
                     elif decision2 == "b":
                         print(f"You banked {self.shelved} points in round {round_num}")
                         self.bank()
@@ -220,11 +227,11 @@ class Game(GameLogic, Banker):
                         print(f"Total score is {self.balance} points")
 
                         dice_num = 6
-                        print(f"Starting round {round_num}")
+                        if round_num!=20:
+                            print(f"Starting round {round_num}")
 
-                    elif decision2 == "q":
-                        print(f"Thanks for playing. You earned {self.balance} points")
-                        var1 = False
+                    elif decision2 == 'r':
+                        continue
                     
                     
         else: 
